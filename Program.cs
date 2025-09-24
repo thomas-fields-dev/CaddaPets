@@ -399,7 +399,7 @@
                         while (searchTerms == "")
                         {
                             var matches = "";
-                            string[] progressIndicator = ["| ", "/ ", "—- ", @"\ ", "| ", "/ ", "--", @"\ "];
+                            string[] progressIndicator = ["| ", "/ ", "—-", "* "];
                             Console.WriteLine("Provide pet characteristic (can enter multiple values with ','):");
                             readResult = Console.ReadLine();
                             if (readResult != null)
@@ -417,29 +417,29 @@
                                         string[] terms = searchTerms.Split(",");
                                         Array.Sort(terms);
                                         string match = "";
-                                        var delay = Task.Delay(1000);
                                         for (int j = 0; j < terms.Length; j++)
                                         {
+                                            var delay = Task.Delay(1000);
                                             Console.CursorLeft = 0;
-                                            Console.Write($"searching...{terms[j]} {progressIndicator[0]}");
+                                            Console.Write($"searching...{terms[j]}  {progressIndicator[0]} 3");
                                             Task.WaitAll(delay);
 
                                             if (combinedDescription.Contains(terms[j].Flatten()))
                                             {
                                                 Console.CursorLeft = 0;
-                                                Console.Write($"searching...{terms[j]} {progressIndicator[1]}");
+                                                Console.Write($"searching...{terms[j]}  {progressIndicator[1]} 2");
                                                 delay = Task.Delay(1000);
                                                 Task.WaitAll(delay);
                                                 if (i != maxPets)
                                                 {
                                                     Console.CursorLeft = 0;
-                                                    Console.Write($"searching...{terms[j]} {progressIndicator[2]}");
+                                                    Console.Write($"searching...{terms[j]}  {progressIndicator[2]} 1");
                                                     delay = Task.Delay(1000);
                                                     Task.WaitAll(delay);
                                                     if (!matches.Contains(ourAnimals[i, 0]))
                                                     {
                                                         Console.CursorLeft = 0;
-                                                        Console.Write($"searching...{terms[j]} {progressIndicator[3]}");
+                                                        Console.Write($"searching...{terms[j]}  {progressIndicator[3]} 0");
                                                         delay = Task.Delay(1000);
                                                         Task.WaitAll(delay);
 
@@ -447,16 +447,21 @@
                                                         Console.CursorLeft = 0;
                                                         Console.WriteLine($"Our dog {petName} is a match for your search for {terms[j].Trim()}!");
 
+                                                        animalNickname = ourAnimals[i, 3];
                                                         match = combinedDescription;
                                                         matchesFound++;
                                                     }
                                                 }
                                                 continue;
                                             }
+                                            Console.CursorLeft = 0;
+                                            Console.Write(new string(' ', Console.BufferWidth));
                                         }
                                         Console.CursorLeft = 0;
                                         if (matchesFound > 0)
                                         {
+                                            Console.WriteLine("");
+                                            Console.WriteLine(animalNickname);
                                             Console.WriteLine(match);
                                             Console.WriteLine();
                                         }
@@ -465,7 +470,7 @@
                                 if (matchesFound == 0)
                                 {
                                     Console.CursorLeft = 0;
-                                    Console.WriteLine("No dogs matched                    ");
+                                    Console.WriteLine($"None of our dogs are a match for: {searchTerms}");
                                 }
                             }
                         }
