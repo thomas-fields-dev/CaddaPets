@@ -454,7 +454,24 @@
                                                 }
                                                 continue;
                                             }
-                                            Console.CursorLeft = 0;
+                                            else
+                                            {
+                                                Console.CursorLeft = 0;
+                                                Console.Write($"searching...{terms[j]}  {progressIndicator[1]} 2");
+                                                delay = Task.Delay(1000);
+                                                Task.WaitAll(delay);
+
+                                                Console.CursorLeft = 0;
+                                                Console.Write($"searching...{terms[j]}  {progressIndicator[2]} 1");
+                                                delay = Task.Delay(1000);
+                                                Task.WaitAll(delay);
+
+                                                Console.CursorLeft = 0;
+                                                Console.Write($"searching...{terms[j]}  {progressIndicator[3]} 0");
+                                                delay = Task.Delay(1000);
+                                                Task.WaitAll(delay);
+                                            }
+                                                Console.CursorLeft = 0;
                                             Console.Write(new string(' ', Console.BufferWidth));
                                         }
                                         Console.CursorLeft = 0;
