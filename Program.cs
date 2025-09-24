@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace CaddaPets
+﻿namespace CaddaPets
 {
     internal class Program
     {
@@ -92,7 +90,6 @@ namespace CaddaPets
                 ourAnimals[i, 6] = $"Suggested donation: {decimalDonation:C2}";
             }
 
-
             // display the top-level menu options
             do
             {
@@ -116,6 +113,7 @@ namespace CaddaPets
                     int.TryParse(readResult, out menuSelection);
                 }
 
+                Console.WriteLine($"You selected menu option {readResult}.");
 
                 switch (menuSelection)
                 {
@@ -395,52 +393,80 @@ namespace CaddaPets
                     case 7:
                         break;
                     case 8:
-                        string searchTerm = "";
+                        int matchesFound = 0;
+                        string searchTerms = "";
                         string combinedDescription = "";
-                        while (searchTerm == "")
+                        while (searchTerms == "")
                         {
-                            string matches = "";
-                            string[] matchingIds;
-                            Console.WriteLine("Provide pet characteristic:");
+                            var matches = "";
+                            string[] progressIndicator = ["| ", "/ ", "—- ", @"\ ", "| ", "/ ", "--", @"\ "];
+                            Console.WriteLine("Provide pet characteristic (can enter multiple values with ','):");
                             readResult = Console.ReadLine();
                             if (readResult != null)
                             {
-                                searchTerm = readResult.Flatten();
+                                searchTerms = readResult.Flatten();
                             }
-                            if (searchTerm != "")
+
+                            if (searchTerms != "")
                             {
                                 for (int i = 0; i < maxPets; i++)
                                 {
                                     if (ourAnimals[i, 0] != "ID #: " && ourAnimals[i, 1].Contains("dog"))
                                     {
                                         combinedDescription = ourAnimals[i, 4] + "\n" + ourAnimals[i, 5];
-                                        if (combinedDescription.Contains(searchTerm))
+                                        string[] terms = searchTerms.Split(",");
+                                        Array.Sort(terms);
+                                        string match = "";
+                                        var delay = Task.Delay(1000);
+                                        for (int j = 0; j < terms.Length; j++)
                                         {
-                                            if (i != maxPets)
-                                                matches += ourAnimals[i, 0] + "|";
-                                            continue;
-                                        }
-                                    }
-                                }
-                                if (matches != "")
-                                {
-                                    matchingIds = matches.Split("|", StringSplitOptions.RemoveEmptyEntries);
-                                    for (int i = 0; i < maxPets; i++)
-                                    {
-                                        for (int j = 0; j < matchingIds.Length; j++)
-                                        {
-                                            if (ourAnimals[i, 0] == matchingIds[j])
+                                            Console.CursorLeft = 0;
+                                            Console.Write($"searching...{terms[j]} {progressIndicator[0]}");
+                                            Task.WaitAll(delay);
+
+                                            if (combinedDescription.Contains(terms[j].Flatten()))
                                             {
-                                                for (int k = 0; k < 7; k++)
+                                                Console.CursorLeft = 0;
+                                                Console.Write($"searching...{terms[j]} {progressIndicator[1]}");
+                                                delay = Task.Delay(1000);
+                                                Task.WaitAll(delay);
+                                                if (i != maxPets)
                                                 {
-                                                    Console.WriteLine(ourAnimals[i, k]);
+                                                    Console.CursorLeft = 0;
+                                                    Console.Write($"searching...{terms[j]} {progressIndicator[2]}");
+                                                    delay = Task.Delay(1000);
+                                                    Task.WaitAll(delay);
+                                                    if (!matches.Contains(ourAnimals[i, 0]))
+                                                    {
+                                                        Console.CursorLeft = 0;
+                                                        Console.Write($"searching...{terms[j]} {progressIndicator[3]}");
+                                                        delay = Task.Delay(1000);
+                                                        Task.WaitAll(delay);
+
+                                                        string petName = ourAnimals[i, 3].Replace("Nickname:", "").Trim();
+                                                        Console.CursorLeft = 0;
+                                                        Console.WriteLine($"Our dog {petName} is a match for your search for {terms[j].Trim()}!");
+
+                                                        match = combinedDescription;
+                                                        matchesFound++;
+                                                    }
                                                 }
+                                                continue;
                                             }
                                         }
+                                        Console.CursorLeft = 0;
+                                        if (matchesFound > 0)
+                                        {
+                                            Console.WriteLine(match);
+                                            Console.WriteLine();
+                                        }
                                     }
                                 }
-                                else
-                                    Console.WriteLine("No dogs matched");
+                                if (matchesFound == 0)
+                                {
+                                    Console.CursorLeft = 0;
+                                    Console.WriteLine("No dogs matched                    ");
+                                }
                             }
                         }
                         break;
